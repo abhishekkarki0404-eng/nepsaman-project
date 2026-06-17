@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sasto Bazar – Affordable Electronics Marketplace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+ 
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">🎉 Free delivery on verified items above Rs. 5,000 &nbsp;|&nbsp; 100% Buyer Protection &nbsp;|&nbsp; Sell your gadget in 5 minutes</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-icon">🛒</span>Sasto<span>Bazar</span></div>
+    <div class="search-wrap">
+      <select id="searchCat">
+        <option>All</option>
+        <option>Phones</option>
+        <option>Laptops</option>
+        <option>TVs</option>
+        <option>Audio</option>
+        <option>Cameras</option>
+        <option>Gaming</option>
+      </select>
+      <input type="text" id="searchInput" placeholder="Search phones, laptops, TVs, cameras…" />
+      <button onclick="doSearch()">🔍</button>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="openCart()">
+        <span class="icon">🛒</span>
+        <span>Cart</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="nav-btn">
+        <span class="icon">❤️</span>
+        <span>Wishlist</span>
+      </button>
+      <button class="nav-btn">
+        <span class="icon">👤</span>
+        <span>Account</span>
+      </button>
+      <button class="nav-btn sell-btn" onclick="openSellModal()">+ Sell</button>
+    </div>
+  </div>
+</nav>
+
+<!-- CATEGORY BAR -->
+<div class="cat-bar">
+  <div class="cat-inner" id="catBar">
+    <div class="cat-item active" onclick="filterCat('all',this)"><span class="cat-icon">📦</span>All</div>
+    <div class="cat-item" onclick="filterCat('Smartphones',this)"><span class="cat-icon">📱</span>Phones</div>
+    <div class="cat-item" onclick="filterCat('Laptop',this)"><span class="cat-icon">💻</span>Laptops</div>
+    <div class="cat-item" onclick="filterCat('TV',this)"><span class="cat-icon">📺</span>TVs</div>
+    <div class="cat-item" onclick="filterCat('Audio',this)"><span class="cat-icon">🎧</span>Audio</div>
+    <div class="cat-item" onclick="filterCat('Camera',this)"><span class="cat-icon">📷</span>Cameras</div>
+    <div class="cat-item" onclick="filterCat('Gaming',this)"><span class="cat-icon">🎮</span>Gaming</div>
+    <div class="cat-item" onclick="filterCat('Accessories',this)"><span class="cat-icon">🔌</span>Accessories</div>
+    <div class="cat-item" onclick="filterCat('Tablets',this)"><span class="cat-icon">📱</span>Tablets</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🇳🇵 Nepal's #1 Second-Hand Electronics Market</div>
+      <h1>Buy & Sell <em>Quality</em><br>Electronics for Less</h1>
+      <p>Find genuine, verified second-hand gadgets at honest prices. From sellers across Nepal — phones, laptops, TVs, cameras & more.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">12K+</span><span class="stat-lbl">Products</span></div>
+        <div class="stat"><span class="stat-num">8K+</span><span class="stat-lbl">Sellers</span></div>
+        <div class="stat"><span class="stat-num">60%</span><span class="stat-lbl">Avg. Savings</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>🔥 Trending Searches</h3>
+      <div class="quick-links">
+        <span class="quick-link" onclick="searchQuick('iPhone 13')">iPhone 13</span>
+        <span class="quick-link" onclick="searchQuick('Samsung Galaxy')">Samsung Galaxy</span>
+        <span class="quick-link" onclick="searchQuick('MacBook')">MacBook</span>
+        <span class="quick-link" onclick="searchQuick('Gaming Console')">Gaming Console</span>
+        <span class="quick-link" onclick="searchQuick('AirPods')">AirPods</span>
+        <span class="quick-link" onclick="searchQuick('Canon Camera')">Canon Camera</span>
+        <span class="quick-link" onclick="searchQuick('Smart TV')">Smart TV</span>
+        <span class="quick-link" onclick="searchQuick('iPad')">iPad</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- BANNERS -->
+  <div class="section">
+    <div class="banner-strip">
+      <div class="banner b1"><div class="banner-icon">✅</div><div class="banner-text"><h4>100% Verified</h4><p>Every product checked by our team</p></div></div>
+      <div class="banner b2"><div class="banner-icon">💰</div><div class="banner-text"><h4>Best Prices</h4><p>Up to 70% off retail price</p></div></div>
+      <div class="banner b3"><div class="banner-icon">🔒</div><div class="banner-text"><h4>Buyer Protection</h4><p>Safe payment & easy returns</p></div></div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title"><span class="dot"></span> Products Available</h2>
+      <span class="view-all" id="listingCount">Showing all listings</span>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-bar" id="filterBar">
+      <span class="filter-chip active" onclick="applyFilter('all',this)">All Conditions</span>
+      <span class="filter-chip" onclick="applyFilter('Like New',this)">Like New</span>
+      <span class="filter-chip" onclick="applyFilter('Good',this)">Good</span>
+      <span class="filter-chip" onclick="applyFilter('Fair',this)">Fair</span>
+      <span class="filter-chip" onclick="applyFilter('price-low',this)">Price: Low → High</span>
+      <span class="filter-chip" onclick="applyFilter('price-high',this)">Price: High → Low</span>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">🛒 Sasto<span>Bazar</span></div>
+      <p>Nepal's trusted marketplace for quality second-hand electronics. Buy smart, save big, sell easily.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Buy</h4>
+      <ul><li>How to Buy</li><li>Buyer Protection</li><li>Track Order</li><li>Returns & Refunds</li></ul>
+    </div>
+    <div class="footer-col">
+      <h4>Sell</h4>
+      <ul><li>Start Selling</li><li>Pricing Guide</li><li>Seller Tips</li><li>Verified Badge</li></ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul><li>Help Center</li><li>Contact Us</li><li>Report Fraud</li><li>About Us</li></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Sasto Bazar. All rights reserved.</span>
+    <span>Made with ❤️ in Nepal 🇳🇵</span>
+  </div>
+</footer>
+
+<!-- SELL MODAL -->
+<div class="modal-overlay" id="sellModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">📤 List Your Product</h3>
+      <button class="modal-close" onclick="closeSellModal()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Product Name *</label>
+      <input class="form-control" id="f_name" placeholder="e.g. iPhone 13 Pro 256GB" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-control" id="f_cat">
+          <option>Smartphones</option><option>Laptop</option><option>TV</option>
+          <option>Audio</option><option>Camera</option><option>Gaming</option>
+          <option>Accessories</option><option>Tablets</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Condition *</label>
+        <select class="form-control" id="f_cond">
+          <option>Like New</option><option>Good</option><option>Fair</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Asking Price (Rs.) *</label>
+        <input class="form-control" id="f_price" type="number" placeholder="e.g. 35000" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Original Price (Rs.)</label>
+        <input class="form-control" id="f_orig" type="number" placeholder="e.g. 75000" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Seller Name *</label>
+      <input class="form-control" id="f_seller" placeholder="Your name" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Location</label>
+      <input class="form-control" id="f_loc" placeholder="e.g. Kathmandu, Pokhara…" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" id="f_desc" rows="3" placeholder="Describe condition, accessories included, reason for selling…"></textarea>
+    </div>
+    <button class="submit-btn" onclick="submitListing()">🚀 List for Sale</button>
+  </div>
+</div>
+
+<!-- CART OVERLAY + SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-head">
+    <h3>🛒 Your Cart</h3>
+    <button class="modal-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">Rs. 0</span>
+    </div>
+    <button class="checkout-btn">✅ Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+</body>
+</html>
