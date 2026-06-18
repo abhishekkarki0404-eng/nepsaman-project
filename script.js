@@ -1,229 +1,188 @@
-const EMOJIS = {
-  Smartphones:'📱', Laptop:'💻', TV:'📺',
-  Audio:'🎧', Camera:'📷', Gaming:'🎮',
-  Accessories:'🔌', Tablets:'📟'
-};
-
 let products = [
-  { id:1,  name:'iPhone 13 Pro 128GB', cat:'Smartphones', cond:'Like New', price:55000, orig:105000, seller:'Ram Sharma', loc:'Kathmandu', badge:'HOT', rating:4.8, reviews:23 },
-  { id:2,  name:'Samsung Galaxy S22 Ultra', cat:'Smartphones', cond:'Good', price:48000, orig:95000, seller:'Sita Devi', loc:'Pokhara', badge:'', rating:4.6, reviews:15 },
-  { id:3,  name:'MacBook Air M1 8GB 256GB', cat:'Laptop', cond:'Like New', price:85000, orig:140000, seller:'Bikash Rai', loc:'Butwal', badge:'HOT', rating:4.9, reviews:31 },
-  { id:4,  name:'Dell XPS 15 i7 16GB', cat:'Laptop', cond:'Good', price:70000, orig:130000, seller:'Hari Karki', loc:'Lalitpur', badge:'', rating:4.5, reviews:9 },
-  { id:5,  name:'Sony 55" 4K OLED Smart TV', cat:'TV', cond:'Good', price:62000, orig:120000, seller:'Gita Poudel', loc:'Chitwan', badge:'SALE', rating:4.7, reviews:12 },
-  { id:6,  name:'Sony WH-1000XM4 Headphones', cat:'Audio', cond:'Like New', price:18000, orig:38000, seller:'Arun Thapa', loc:'Biratnagar', badge:'', rating:4.8, reviews:18 },
-  { id:7,  name:'Canon EOS 90D DSLR', cat:'Camera', cond:'Good', price:75000, orig:130000, seller:'Priya Limbu', loc:'Dharan', badge:'', rating:4.6, reviews:7 },
-  { id:8,  name:'PlayStation 5 Console', cat:'Gaming', cond:'Like New', price:65000, orig:85000, seller:'Suraj Magar', loc:'Kathmandu', badge:'HOT', rating:4.9, reviews:42 },
-  { id:9,  name:'Samsung Galaxy Tab S8', cat:'Tablets', cond:'Good', price:35000, orig:65000, seller:'Nisha Gurung', loc:'Pokhara', badge:'', rating:4.5, reviews:11 },
-  { id:10, name:'Realme GT Neo 5 256GB', cat:'Smartphones', cond:'Like New', price:32000, orig:55000, seller:'Deep Shrestha', loc:'Butwal', badge:'SALE', rating:4.4, reviews:8 },
-  { id:11, name:'Lenovo ThinkPad X1 Carbon', cat:'Laptop', cond:'Fair', price:55000, orig:110000, seller:'Kumar KC', loc:'Lalitpur', badge:'', rating:4.3, reviews:5 },
-  { id:12, name:'Apple AirPods Pro 2nd Gen', cat:'Audio', cond:'Like New', price:16000, orig:30000, seller:'Mina Tamang', loc:'Kathmandu', badge:'', rating:4.7, reviews:29 },
-  { id:13, name:'GoPro Hero 11 Black', cat:'Camera', cond:'Good', price:28000, orig:55000, seller:'Raj Bist', loc:'Nepalgunj', badge:'SALE', rating:4.6, reviews:14 },
-  { id:14, name:'Nintendo Switch OLED', cat:'Gaming', cond:'Good', price:38000, orig:58000, seller:'Pradeep Oli', loc:'Pokhara', badge:'', rating:4.5, reviews:19 },
-  { id:15, name:'Xiaomi Mi 13 Pro 256GB', cat:'Smartphones', cond:'Good', price:42000, orig:75000, seller:'Anita Bhatt', loc:'Dhangadhi', badge:'', rating:4.4, reviews:6 },
-  { id:16, name:'USB-C Fast Charge Hub 7-in-1', cat:'Accessories', cond:'Like New', price:2500, orig:5000, seller:'Tech Store NP', loc:'Kathmandu', badge:'', rating:4.3, reviews:34 },
-];
+      {id:1, name:"iPhone 16 Pro 256GB", cat:"phones", price:124999, orig:149999, emoji:"📱", badge:"NEW"},
+      {id:2, name:"Samsung Galaxy S25 Ultra", cat:"phones", price:134999, orig:159999, emoji:"📱", badge:""},
+      {id:3, name:"MacBook Air M4 16GB", cat:"laptops", price:139999, orig:169999, emoji:"💻", badge:"BEST"},
+      {id:4, name:"Dell XPS 14 OLED", cat:"laptops", price:112000, orig:145000, emoji:"💻", badge:""},
+      {id:5, name:"Apple Watch Ultra 2", cat:"watches", price:89999, orig:105000, emoji:"⌚", badge:"HOT"},
+      {id:6, name:"Samsung Galaxy Watch 7", cat:"watches", price:42999, orig:52999, emoji:"⌚", badge:""},
+      {id:7, name:"iPhone 15 Pro Max", cat:"phones", price:98999, orig:139999, emoji:"📱", badge:""},
+      {id:8, name:"Lenovo Legion Pro 7i", cat:"laptops", price:189999, orig:229999, emoji:"💻", badge:"GAMING"}
+    ];
 
-let cart = [];
-let wishlist = new Set();
-let activeFilter = 'all';
-let activeCat = 'all';
-let searchTerm = '';
+    let cart = [];
 
-/* ────────────────────────────────────────────────────────────────
-   RENDER
-──────────────────────────────────────────────────────────────── */
-function getFiltered() {
-  let list = [...products];
-  if (activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
-  if (activeFilter === 'Like New' || activeFilter === 'Good' || activeFilter === 'Fair')
-    list = list.filter(p => p.cond === activeFilter);
-  if (activeFilter === 'price-low') list.sort((a,b) => a.price - b.price);
-  if (activeFilter === 'price-high') list.sort((a,b) => b.price - a.price);
-  if (searchTerm) list = list.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.cat.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  return list;
-}
+    function fmt(price) {
+      return "Rs. " + price.toLocaleString('en-IN');
+    }
 
-function fmt(n) { return 'Rs. ' + n.toLocaleString('en-IN'); }
-
-function renderProducts() {
-  const grid = document.getElementById('productGrid');
-  const list = getFiltered();
-  document.getElementById('listingCount').textContent = `${list.length} listing${list.length!==1?'s':''} found`;
-
-  if (!list.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)">
-      <div style="font-size:3rem;margin-bottom:12px">🔍</div>
-      <p>No products found. Try a different search or filter.</p>
-    </div>`;
-    return;
-  }
-
-  grid.innerHTML = list.map(p => {
-    const save = Math.round((1 - p.price/p.orig)*100);
-    const badgeCls = p.badge==='HOT'?'hot':p.badge==='SALE'?'sale':'';
-    const w = wishlist.has(p.id);
-    return `<div class="product-card">
-      <div class="card-img">
-        ${p.badge?`<span class="card-badge ${badgeCls}">${p.badge}</span>`:''}
-        <span style="user-select:none">${EMOJIS[p.cat]||'📦'}</span>
-        <button class="wishlist-btn ${w?'active':''}" onclick="toggleWish(${p.id},this)">${w?'❤️':'🤍'}</button>
-      </div>
-      <div class="card-body">
-        <div class="card-cat">${p.cat}</div>
-        <div class="card-name">${p.name}</div>
-        <span class="card-condition">${p.cond}</span>
-        <div class="card-price">
-          <span class="price-now">${fmt(p.price)}</span>
-          <span class="price-old">${fmt(p.orig)}</span>
-          <span class="price-save">-${save}%</span>
+    function renderProducts(filteredProducts) {
+      const grid = document.getElementById("product-grid");
+      grid.innerHTML = filteredProducts.map(p => `
+        <div class="product-card">
+          <div class="product-image">
+            ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+            <span>${p.emoji}</span>
+          </div>
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div style="color:#64748b;font-size:0.95rem;">Brand New • 1 Year Warranty</div>
+            <div style="margin-top:12px;display:flex;align-items:baseline;gap:12px;">
+              <span class="product-price">${fmt(p.price)}</span>
+              <span style="text-decoration:line-through;color:#94a3b8;font-size:0.95rem;">${fmt(p.orig)}</span>
+            </div>
+            <button onclick="addToCart(${p.id});" class="add-to-cart">Add to Cart</button>
+          </div>
         </div>
-        <div class="card-meta">
-          <span class="seller-info">👤 ${p.seller} · 📍 ${p.loc}</span>
-          <span class="rating">⭐ ${p.rating} (${p.reviews})</span>
-        </div>
-        <button class="add-cart-btn" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
-      </div>
-    </div>`;
-  }).join('');
-}
+      `).join('');
+      document.getElementById("result-count").textContent = `${filteredProducts.length} products`;
+    }
 
-/* ────────────────────────────────────────────────────────────────
-   INTERACTIONS
-──────────────────────────────────────────────────────────────── */
-function toggleWish(id, btn) {
-  if (wishlist.has(id)) { wishlist.delete(id); btn.textContent='🤍'; btn.classList.remove('active'); }
-  else { wishlist.add(id); btn.textContent='❤️'; btn.classList.add('active'); showToast('Added to Wishlist ❤️'); }
-}
+    function filterProducts(category) {
+      if (category === 'all') {
+        renderProducts(products);
+      } else {
+        renderProducts(products.filter(p => p.cat === category));
+      }
+    }
 
-function addToCart(id) {
-  const p = products.find(x => x.id===id);
-  const ex = cart.find(x => x.id===id);
-  if (ex) { ex.qty++; } else { cart.push({...p, qty:1}); }
-  updateCartCount();
-  showToast(`${p.name} added to cart 🛒`);
-}
+    function switchCategory(cat) {
+      // Update active tab
+      document.querySelectorAll('.cat-tab').forEach(tab => {
+        tab.classList.toggle('active', (tab.id === `tab-${cat}` || (cat==='all' && tab.id==='tab-all')));
+      });
+      filterProducts(cat);
+    }
 
-function updateCartCount() {
-  document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
-}
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({...product, qty: 1});
+      }
+      
+      updateCartCount();
+      showToast(`${product.name} added to cart! 🛒`);
+    }
 
-function openCart() {
-  document.getElementById('cartSidebar').classList.add('open');
-  document.getElementById('cartOverlay').classList.add('open');
-  renderCart();
-}
-function closeCart() {
-  document.getElementById('cartSidebar').classList.remove('open');
-  document.getElementById('cartOverlay').classList.remove('open');
-}
+    function updateCartCount() {
+      const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      document.getElementById("cart-count").textContent = count;
+    }
 
-function renderCart() {
-  const el = document.getElementById('cartItems');
-  const footer = document.getElementById('cartFooter');
-  if (!cart.length) {
-    el.innerHTML = `<div class="empty-cart"><div class="ec-icon">🛒</div><p>Your cart is empty.<br>Start adding items!</p></div>`;
-    footer.style.display='none'; return;
-  }
-  footer.style.display='block';
-  el.innerHTML = cart.map(i => `<div class="cart-item">
-    <div class="cart-item-icon">${EMOJIS[i.cat]||'📦'}</div>
-    <div class="cart-item-info">
-      <div class="cart-item-name">${i.name}</div>
-      <div class="cart-item-price">${fmt(i.price)} × ${i.qty}</div>
-    </div>
-    <button class="cart-item-remove" onclick="removeFromCart(${i.id})">🗑</button>
-  </div>`).join('');
-  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  document.getElementById('cartTotal').textContent = fmt(total);
-}
+    function openCart() {
+      document.getElementById("cart-overlay").style.display = "block";
+      const sidebar = document.getElementById("cart-sidebar");
+      sidebar.style.right = "0";
 
-function removeFromCart(id) {
-  cart = cart.filter(x => x.id!==id);
-  updateCartCount();
-  renderCart();
-}
+      const itemsContainer = document.getElementById("cart-items");
+      if (cart.length === 0) {
+        itemsContainer.innerHTML = `<p style="text-align:center;padding:60px 20px;color:#64748b;">Your cart is empty</p>`;
+        document.getElementById("cart-footer").style.display = "none";
+        return;
+      }
 
-function filterCat(cat, el) {
-  activeCat = cat;
-  document.querySelectorAll('.cat-item').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  renderProducts();
-}
+      document.getElementById("cart-footer").style.display = "block";
+      
+      let html = '';
+      let total = 0;
+      
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * (item.qty || 1);
+        total += itemTotal;
+        html += `
+          <div style="display:flex;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #e2e8f0;">
+            <div style="font-size:3rem;">${item.emoji}</div>
+            <div style="flex:1">
+              <div style="font-weight:600;">${item.name}</div>
+              <div style="color:#64748b;">Qty: ${item.qty || 1}</div>
+              <div style="margin-top:8px;font-weight:700;">${fmt(itemTotal)}</div>
+            </div>
+            <button onclick="removeFromCart(${index});" style="background:none;border:none;color:#ef4444;cursor:pointer;">Remove</button>
+          </div>
+        `;
+      });
+      
+      itemsContainer.innerHTML = html;
+      document.getElementById("cart-total").textContent = fmt(total);
+    }
 
-function applyFilter(f, el) {
-  activeFilter = f;
-  document.querySelectorAll('.filter-chip').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  renderProducts();
-}
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      openCart();
+    }
 
-function doSearch() {
-  searchTerm = document.getElementById('searchInput').value.trim();
-  renderProducts();
-}
+    function closeCart() {
+      document.getElementById("cart-overlay").style.display = "none";
+      document.getElementById("cart-sidebar").style.right = "-420px";
+    }
 
-function searchQuick(term) {
-  document.getElementById('searchInput').value = term;
-  searchTerm = term;
-  renderProducts();
-}
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2800);
+    }
 
-document.getElementById('searchInput').addEventListener('keydown', e => {
-  if (e.key==='Enter') doSearch();
-});
+    function showLoginModal() {
+      document.getElementById("login-modal").style.display = "flex";
+    }
 
-/* ────────────────────────────────────────────────────────────────
-   SELL MODAL
-──────────────────────────────────────────────────────────────── */
-function openSellModal() { document.getElementById('sellModal').classList.add('open'); }
-function closeSellModal() { document.getElementById('sellModal').classList.remove('open'); }
-document.getElementById('sellModal').addEventListener('click', e => {
-  if (e.target===document.getElementById('sellModal')) closeSellModal();
-});
+    function switchToRegister() {
+      closeModals();
+      setTimeout(() => {
+        document.getElementById("register-modal").style.display = "flex";
+      }, 300);
+    }
 
-function submitListing() {
-  const name = document.getElementById('f_name').value.trim();
-  const cat  = document.getElementById('f_cat').value;
-  const cond = document.getElementById('f_cond').value;
-  const price= parseInt(document.getElementById('f_price').value);
-  const orig = parseInt(document.getElementById('f_orig').value) || price*2;
-  const seller=document.getElementById('f_seller').value.trim();
-  const loc  = document.getElementById('f_loc').value.trim() || 'Nepal';
+    function closeModals() {
+      document.getElementById("login-modal").style.display = "none";
+      document.getElementById("register-modal").style.display = "none";
+    }
 
-  if (!name||!price||!seller) { showToast('⚠️ Please fill in required fields'); return; }
+    function loginUser() {
+      const email = document.getElementById("login-email").value;
+      if (email) {
+        showToast("✅ Logged in successfully!");
+        closeModals();
+      } else {
+        showToast("Please enter your email");
+      }
+    }
 
-  const newProd = {
-    id: Date.now(), name, cat, cond, price, orig,
-    seller, loc, badge:'NEW', rating:5.0, reviews:0
-  };
-  products.unshift(newProd);
-  activeCat='all'; activeFilter='all'; searchTerm='';
-  document.querySelectorAll('.cat-item').forEach((e,i)=>e.classList.toggle('active',i===0));
-  document.querySelectorAll('.filter-chip').forEach((e,i)=>e.classList.toggle('active',i===0));
-  renderProducts();
-  closeSellModal();
+    function registerUser() {
+      const name = document.getElementById("reg-name").value;
+      if (name) {
+        showToast(`🎉 Welcome, ${name.split(" ")[0]}! Account created.`);
+        closeModals();
+      } else {
+        showToast("Please enter your name");
+      }
+    }
 
-  // Reset form
-  ['f_name','f_price','f_orig','f_seller','f_loc','f_desc'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
+    function checkout() {
+      if (cart.length > 0) {
+        showToast("🎉 Thank you for your purchase! (Demo)");
+        cart = [];
+        updateCartCount();
+        closeCart();
+      }
+    }
 
-  showToast(`🎉 "${name}" listed successfully!`);
-}
-
-/* ────────────────────────────────────────────────────────────────
-   TOAST
-──────────────────────────────────────────────────────────────── */
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 2400);
-}
-
-/* ── INIT ───────────────────────────────────────────────────── */
-renderProducts();
+    // Initialize
+    window.onload = function() {
+      renderProducts(products);
+      updateCartCount();
+      
+      // Keyboard support for search (demo)
+      document.addEventListener('keydown', e => {
+        if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+          e.preventDefault();
+          showToast("Search coming soon ✨");
+        }
+      });
+    };
